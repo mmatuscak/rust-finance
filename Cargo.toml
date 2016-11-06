@@ -1,0 +1,8 @@
+[package]
+name = "finance"
+version = "0.1.0"
+authors = ["matt <mmatu21@gmail.com>"]
+
+[dependencies]
+hyper="0.9.11"
+url="1.2.3"
