@@ -22,8 +22,6 @@ struct YqlQuote {
 
 }
 
-fn construct_quote(quote: String) -> String {
-
 
 fn make_query(yahoo_quotes: String, quote: String) -> String {
     let select_from = String::from("SELECT * FROM ");
@@ -33,7 +31,7 @@ fn make_query(yahoo_quotes: String, quote: String) -> String {
     query 
 }
 
-fn construct_url(quote: String) -> String {
+fn construct_url(quote: String) -> hyper::Url{
     let yahoo_quotes = String::from("yahoo.finance.quotes");
     let format = String::from("json");
     let mut url = Url::parse(YAHOO_API).unwrap();
@@ -54,17 +52,21 @@ fn construct_url(quote: String) -> String {
     url
 }
 
-fn get_yahoo(quote: String) -> (String, HttpResult<String>) {
-    let format = String::from("json");
+fn request_url(url: hyper::Url) -> hyper::client::Response {
     let client = Client::new();
-    let url = construct_url(quote);
-
-    let mut res = match client.get(url).send() {
+    let req = match client.get(url).send() {
         Ok(request) => request,
         Err(..) => panic!("Bad request"),
     };
+    
+    req
+}
 
-    assert_eq!(res.status, hyper::Ok);
+fn get_yahoo(quote: String) -> String {
+    let url = construct_url(quote);
+    let mut res = request_url(url);
+
+    //assert_eq!(res.status, hyper::Ok);
 
     let mut buffer = String::new();
     match res.read_to_string(&mut buffer) {
@@ -72,5 +74,5 @@ fn get_yahoo(quote: String) -> (String, HttpResult<String>) {
         Err(..) => panic!("Can't write request to string"),
     };
 
-    buffer, res.status
+    buffer
 }
