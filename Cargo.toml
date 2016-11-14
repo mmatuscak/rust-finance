@@ -6,3 +6,5 @@ authors = ["matt <mmatu21@gmail.com>"]
 [dependencies]
 hyper="0.9.11"
 url="1.2.3"
+itertools="0.5.5"
+serde_json="0.8.3"
